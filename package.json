@@ -1,5 +1,5 @@
 {
-  "name": "Node_Project 1.0",
+  "name": "node-api-project",
   "version": "1.0.0",
   "description": "This project demonstrates the efficient way to use Node js and MongoDB",
   "main": "index.js",
