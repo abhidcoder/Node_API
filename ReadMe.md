@@ -53,14 +53,14 @@ It provides the following features:
    - Method: GET
    - Query Parameters: `tags`, `page`, `limit`
 
-7.  **Upload Post Image:** Upload a post image to a cloud service (e.g., AWS S3).
+7.  **Upload Only Image:** Upload a post image (also has validation to check the image file) to a cloud service (e.g., EC2 or localserver ).
 
    - Endpoint: `/v1/upload`
    - Method: POST
    - Request Body: Form data with the image file (key value(image))
    - Headers : x-api-key, value(FiredrakeSinsIsTheSampleAPIkey)
 
-8. ** Read the json file and import all the data from the json to MongoDB 
+8. ** Read the json file and import all the data from the json to MongoDB Atlas using Mongoose
 
    - Endpoint: `/insert/samples`
    - Method: POST
