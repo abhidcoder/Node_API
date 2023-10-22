@@ -27,6 +27,8 @@ if (config && config.fireBaseApp) {
     // Setting up multer as a middleware to handle file uploads
     const upload = multer({ storage: multer.memoryStorage() });
 
+
+    // Using two middlewares here for authentication first then upload
     router.post("/firebase", apiKeyAuthMiddleware, upload.single("file"), async (req, res) => {
         try {
             const dateTime = giveCurrentDateTime();
