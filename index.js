@@ -2,13 +2,15 @@ const express = require('express');             //Imported Express and created a
 const app = express();                          // Create a router instead of an app
 const cors = require('cors');                   //Enabled CORS (Cross-Origin Resource Sharing) for your server.
 const postRoutes = require('./routes/post');    // Import the routes from the post file
-const postSamples = require('./routes/importSampleData');   // Import the routes from the importSampleData file
+const postSamples = require('./routes/importSampleData');  // Import the routes from the importSampleData file
+const postImages = require('./firebase/uploadScript'); //
 require('dotenv').config();                     //Loaded environment variables from a .env file using dotenv.
 
 app.use(cors());
 app.use(express.json());                        //Used express.json() to enable JSON parsing for incoming requests.
-app.use('/v1', postRoutes);                   // Using the '/post' prefix for the POST API
-app.use('/insert', postSamples);                  // Using the '/insert' prefix for the POST datas from the json
+app.use('/v1', postRoutes);                     // Using the '/post' prefix for the POST API
+app.use('/insert', postSamples);                // Using the '/insert' prefix for the POST datas from the json
+app.use('/bucket', postImages);                 // Using the '/bucket' prefix for the add image in the bucker
 
 
 //Handled the root route with a response to check if the server is working.

@@ -203,6 +203,71 @@ router.get('/getAllData', async (req, res) => {
     }
   });
 
+
+
+// Combined endpoint for filtering, sorting, and pagination
+router.get('/filterSortAndPaginate', async (req, res) => {
+  try {
+    // Get filter tags from the query parameters
+    const tags = req.query.tags;
+    const tagArray = Array.isArray(tags) ? tags : tags.split(',');
+
+    // Get sort direction from the query parameters
+    const sortDirection = req.query.sort || 'asc';
+    //The - sign before the field name -price indicates descending order.
+    const sortField = 'price';
+
+    let sortObject = {};
+      if (sortDirection === 'asc') {
+        sortObject.price = 1; // Ascending order
+      } else if (sortDirection === 'desc') {
+        sortObject.price = -1; // Descending order
+      }
+
+    // Apply pagination parameters
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 2;
+    const skip = (page - 1) * limit;
+
+    // MongoDB aggregation pipeline
+    const pipeline = [
+      {
+        $match: {
+          tags: { $in: tagArray },
+        },
+      },
+      {
+        $sort: {
+          [sortField]: sortObject.price,
+        },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+    ];
+
+    // Query the database using the aggregation pipeline
+    const [filteredAndSortedData, totalItems] = await Promise.all([
+      dbData.aggregate(pipeline).exec(),
+      dbData.countDocuments({ tags: { $in: tagArray } }),
+    ]);
+
+    // Send the filtered, sorted, and paginated data as a JSON response
+    res.json({
+      data: filteredAndSortedData,
+      hasMore: ifHasMore(page, limit, totalItems),
+      totalItems,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 // Define allowed extensions and MIME types for file uploads
 const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif'];
 const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
@@ -210,7 +275,8 @@ const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
 // Configure multer storage for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'assets/'); // Specify the directory where uploaded files will be stored
+    const absolutePath = path.resolve(__dirname, '../assets');
+    cb(null, absolutePath); // Specify the directory where uploaded files will be stored
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname); // Use the original file name as the name of the stored file
