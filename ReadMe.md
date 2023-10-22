@@ -1,5 +1,7 @@
 # You can Download the API Collection From the link Below:
 
+**Use Postman or Thunder Client (VS code extension) to import this collection
+
 --> https://drive.google.com/file/d/1sbnxSADNElaB3q5mUKFhYlbung2rbJ3M/view?usp=sharing
 
 # Live on:
